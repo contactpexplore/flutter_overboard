@@ -29,16 +29,16 @@ class OverBoard extends StatefulWidget {
       : super(key: key);
 
   @override
-  _OverBoardState createState() => _OverBoardState();
+  OverBoardState createState() => OverBoardState();
 }
 
-class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
+class OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
   OverBoardAnimator _animator;
 
   ScrollController _scrollController = new ScrollController();
   double _bulletPadding = 5.0, _bulletSize = 10.0, _bulletContainerWidth = 0;
 
-  int _counter = 0, _last = 0;
+  int counter = 0, _last = 0;
   int _total = 0;
   double initial = 0, distance = 0;
   Random random = new Random();
@@ -70,17 +70,17 @@ class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
       onPanEnd: (DragEndDetails details) {
         initial = 0.0;
         setState(() {
-          _last = _counter;
+          _last = counter;
         });
-        if (distance > 1 && _counter > 0) {
+        if (distance > 1 && counter > 0) {
           setState(() {
-            _counter--;
+            counter--;
             _swipeDirection = SwipeDirection.LEFT_TO_RIGHT;
           });
           _animate();
-        } else if (distance < 0 && _counter < _total - 1) {
+        } else if (distance < 0 && counter < _total - 1) {
           setState(() {
-            _counter++;
+            counter++;
             _swipeDirection = SwipeDirection.RIGHT_TO_LEFT;
           });
           _animate();
@@ -95,7 +95,7 @@ class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
               return ClipOval(
                   clipper: CircularClipper(
                       _animator.getAnimator().value, widget.center),
-                  child: _getPage(_counter));
+                  child: _getPage(counter));
             },
             child: Container(),
           ),
@@ -113,7 +113,7 @@ class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
                         child: Text(widget.skipText ?? "SKIP"),
                         onPressed:  (widget.skipCallback != null ? widget.skipCallback : _skip),
                       ),
-                  opacity: (_counter < _total - 1) ? 1.0 : 0.0,
+                  opacity: (counter < _total - 1) ? 1.0 : 0.0,
                 ),
                 Expanded(
                   child: Center(child: LayoutBuilder(
@@ -137,7 +137,7 @@ class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
                                           width: _bulletSize,
                                           decoration: BoxDecoration(
                                               shape: BoxShape.circle,
-                                              color: (i == _counter
+                                              color: (i == counter
                                                   ? Colors.white
                                                   : Colors.white30)),
                                         ),
@@ -150,7 +150,7 @@ class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
                     },
                   )),
                 ),
-                (_counter < _total - 1
+                (counter < _total - 1
                     ? FlatButton(
                         padding: const EdgeInsets.all(20.0),
                         textColor: Colors.white,
@@ -231,8 +231,8 @@ class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
   _next() {
     setState(() {
       _swipeDirection = SwipeDirection.RIGHT_TO_LEFT;
-      _last = _counter;
-      _counter++;
+      _last = counter;
+      counter++;
     });
     _animate();
   }
@@ -240,8 +240,8 @@ class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
   _skip() {
     setState(() {
       _swipeDirection = SwipeDirection.SKIP_TO_LAST;
-      _last = _counter;
-      _counter = _total - 1;
+      _last = counter;
+      counter = _total - 1;
     });
     _animate();
   }
@@ -250,7 +250,7 @@ class _OverBoardState extends State<OverBoard> with TickerProviderStateMixin {
     _animator.getController().forward(from: 0.0);
 
     double _bulletDimension = (_bulletPadding * 2) + (_bulletSize);
-    double _scroll = _bulletDimension * _counter;
+    double _scroll = _bulletDimension * counter;
     double _maxScroll = _bulletDimension * _total - 1;
     if (_scroll > _bulletContainerWidth &&
         _swipeDirection == SwipeDirection.RIGHT_TO_LEFT) {
